@@ -1,7 +1,7 @@
 <link rel="import" href="/bower_components/polymer/polymer.html"/>
 <link rel="import" href="/bower_components/core-ajax/core-ajax.html"/>
 
-<polymer-element name="weather-card">
+<polymer-element name="weather-card" constructor="WeatherCard">
     <template>
         <style>
             #card {
@@ -50,13 +50,15 @@
                    handleAs="json"></core-ajax>
 
         <div id="card" class="hide">
-            <div class="large"></div>
-            <div class="medium"></div>
-            <div class="medium"></div>
+            <div class="large">{{weather.name + ', ' + weather.sys.country}}</div>
+            <div class="medium">{{formatDate(weather.dt, 'dddd HH:mm')}}</div>
+            <div class="medium">{{weather.weather[0].description}}</div>
             <div>
-                <img style="width: 64px; height: 64px; float: left;" src="" alt=""/>
+                <img style="width: 64px; height: 64px; float: left;"
+                     src="http://openweathermap.org/img/w/{{weather.weather[0].icon}}.png"
+                     alt=""/>
                 <div class="degrees">
-                    <span></span>
+                    <span>{{formatTemperature(weather.main.temp)}}</span>
                 </div>
                 <div class="celsius">&deg;C</div>
             </div>
@@ -69,14 +71,27 @@
             city: "Kyiv",
             weather: {},
             ready: function() {
-                this.$.ajax.url = "http://api.openweathermap.org/data/2.5/weather?q=Kiev&units=metric&APPID=50e418e0f0c0e501713115a1df9ca42e";
+                if (this.model) {
+                    this.weather = this.model;
+                    this.$.card.classList.remove('hide');
+                } else {
+                    this.$.ajax.url = "http://api.openweathermap.org/data/2.5/weather?q=Kiev&units=metric&APPID=50e418e0f0c0e501713115a1df9ca42e";
+                }
             },
             weatherLoaded: function() {
                 this.weather = this.$.ajax.response;
                 this.$.card.classList.remove('hide');
 
                 console.log(this.weather);
+            },
+            formatDate: function(timestamp, format) {
+                return moment(timestamp * 1000).format(format);
+            },
 
+            formatTemperature: function(temp) {
+                if (typeof temp !== 'undefined') {
+                    return Math.round(temp);
+                }
             }
         });
     </script>

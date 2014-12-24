@@ -49,7 +49,18 @@
                    on-core-response="{{weatherLoaded}}"
                    handleAs="json"></core-ajax>
 
-        
+        <div id="card" class="hide">
+            <div class="large"></div>
+            <div class="medium"></div>
+            <div class="medium"></div>
+            <div>
+                <img style="width: 64px; height: 64px; float: left;" src="" alt=""/>
+                <div class="degrees">
+                    <span></span>
+                </div>
+                <div class="celsius">&deg;C</div>
+            </div>
+        </div>
 
     </template>
 </polymer-element>

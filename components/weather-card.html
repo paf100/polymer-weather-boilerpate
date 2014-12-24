@@ -63,4 +63,22 @@
         </div>
 
     </template>
+
+    <script>
+        Polymer({
+            city: "Kyiv",
+            weather: {},
+            ready: function() {
+                this.$.ajax.url = "http://api.openweathermap.org/data/2.5/weather?q=Kiev&units=metric&APPID=50e418e0f0c0e501713115a1df9ca42e";
+            },
+            weatherLoaded: function() {
+                this.weather = this.$.ajax.response;
+                this.$.card.classList.remove('hide');
+
+                console.log(this.weather);
+
+            }
+        });
+    </script>
+
 </polymer-element>

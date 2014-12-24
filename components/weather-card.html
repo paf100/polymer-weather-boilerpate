@@ -98,7 +98,6 @@
                         break;
                     case 'dayData':
                         this.weather = JSON.parse(this.weatherdata);
-                            console.log(this.weather);
                         this.$.card.classList.remove('hide');
                         break;
                 }
@@ -109,7 +108,6 @@
                 this.weather = this.$.ajax.response;
                 this.$.card.classList.remove('hide');
 
-                console.log(this.weather);
             },
             formatDate: function(timestamp, format) {
                 return moment(timestamp * 1000).format(format);

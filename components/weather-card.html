@@ -1,7 +1,7 @@
 <link rel="import" href="/bower_components/polymer/polymer.html"/>
 <link rel="import" href="/bower_components/core-ajax/core-ajax.html"/>
 
-<polymer-element name="weather-card" constructor="WeatherCard">
+<polymer-element name="weather-card" attributes="city mode weatherdata">
     <template>
         <style>
             #card {
@@ -43,26 +43,45 @@
             }
         </style>
 
-        <core-ajax id="ajax"
-                   auto
-                   url=""
-                   on-core-response="{{weatherLoaded}}"
-                   handleAs="json"></core-ajax>
+        <template if="{{mode == 'day'}}">
+            <core-ajax id="ajax"
+                       auto
+                       url=""
+                       on-core-response="{{weatherLoaded}}"
+                       handleAs="json"></core-ajax>
 
-        <div id="card" class="hide">
-            <div class="large">{{weather.name + ', ' + weather.sys.country}}</div>
-            <div class="medium">{{formatDate(weather.dt, 'dddd HH:mm')}}</div>
-            <div class="medium">{{weather.weather[0].description}}</div>
-            <div>
-                <img style="width: 64px; height: 64px; float: left;"
-                     src="http://openweathermap.org/img/w/{{weather.weather[0].icon}}.png"
-                     alt=""/>
-                <div class="degrees">
-                    <span>{{formatTemperature(weather.main.temp)}}</span>
+            <div id="card" class="hide">
+                <div class="large">{{weather.name + ', ' + weather.sys.country}}</div>
+                <div class="medium">{{formatDate(weather.dt, 'dddd HH:mm')}}</div>
+                <div class="medium">{{weather.weather[0].description}}</div>
+                <div>
+                    <img style="width: 64px; height: 64px; float: left;"
+                         src="http://openweathermap.org/img/w/{{weather.weather[0].icon}}.png"
+                         alt=""/>
+                    <div class="degrees">
+                        <span>{{formatTemperature(weather.main.temp)}}</span>
+                    </div>
+                    <div class="celsius">&deg;C</div>
                 </div>
-                <div class="celsius">&deg;C</div>
             </div>
-        </div>
+        </template>
+
+        <template if="{{mode == 'dayData'}}">
+            <div id="card" class="hide">
+                <div class="large">{{city}}</div>
+                <div class="medium">{{formatDate(weather.dt, 'dddd HH:mm')}}</div>
+                <div class="medium">{{weather.weather[0].description}}</div>
+                <div>
+                    <img style="width: 64px; height: 64px; float: left;"
+                         src="http://openweathermap.org/img/w/{{weather.weather[0].icon}}.png"
+                         alt=""/>
+                    <div class="degrees">
+                        <span>{{formatTemperature(weather.temp.day)}}</span>
+                    </div>
+                    <div class="celsius">&deg;C</div>
+                </div>
+            </div>
+        </template>
 
     </template>
 
@@ -70,13 +89,21 @@
         Polymer({
             city: "Kyiv",
             weather: {},
+            mode: 'day',
+            weatherdata: {},
             ready: function() {
-                if (this.model) {
-                    this.weather = this.model;
-                    this.$.card.classList.remove('hide');
-                } else {
-                    this.$.ajax.url = "http://api.openweathermap.org/data/2.5/weather?q=Kiev&units=metric&APPID=50e418e0f0c0e501713115a1df9ca42e";
+                switch(this.mode) {
+                    case 'day':
+                        this.$.ajax.url = "http://api.openweathermap.org/data/2.5/weather?q=" + this.city + "&units=metric&APPID=50e418e0f0c0e501713115a1df9ca42e";
+                        break;
+                    case 'dayData':
+                        this.weather = JSON.parse(this.weatherdata);
+                            console.log(this.weather);
+                        this.$.card.classList.remove('hide');
+                        break;
                 }
+
+
             },
             weatherLoaded: function() {
                 this.weather = this.$.ajax.response;

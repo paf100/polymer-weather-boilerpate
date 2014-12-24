@@ -1,13 +1,10 @@
-http-server: npm install -g http-server
+<link rel="import" href="/bower_components/polymer/polymer.html"/>
+<link rel="import" href="/bower_components/core-ajax/core-ajax.html"/>
 
-api key: 50e418e0f0c0e501713115a1df9ca42e
-ajax for weather card: http://api.openweathermap.org/data/2.5/weather?q=Kiev&units=metric&APPID=50e418e0f0c0e501713115a1df9ca42e
-ajax for weather list: http://api.openweathermap.org/data/2.5/forecast/daily?q=Kyiv&mode=json&units=metric&cnt=10&APPID=50e418e0f0c0e501713115a1df9ca42e
-ajax for weather grid: http://api.openweathermap.org/data/2.5/history/city?q=Kyiv&mode=json&units=metric&type=day&start=' + start + '&end=' + end + '&APPID=50e418e0f0c0e501713115a1df9ca42e
-
-Weather-card styling:
-
-#card {
+<polymer-element name="weather-card">
+    <template>
+        <style>
+            #card {
                 margin: 15px;
                 background-color: #fff;
                 box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
@@ -44,3 +41,15 @@ Weather-card styling:
             #card.dayData div {
                 float: left;
             }
+        </style>
+
+        <core-ajax id="ajax"
+                   auto
+                   url=""
+                   on-core-response="{{weatherLoaded}}"
+                   handleAs="json"></core-ajax>
+
+        
+
+    </template>
+</polymer-element>
